@@ -2,9 +2,7 @@ use env_logger::Builder;
 use log::LevelFilter;
 use serde::de::DeserializeOwned;
 use std::{
-    io::{stdin, stdout, Read, Write},
-    path::{Path, PathBuf},
-    str,
+    env, io::{stdin, stdout, Read, Write}, path::{Path, PathBuf}, str
 };
 use tera::Tera;
 
@@ -47,7 +45,7 @@ pub struct FileCmd {
     pub to: Option<ToVariant>,
 
     // also: #[clap(long, action = clap::ArgAction::Set, default_value_t = false)] for --tera=false
-    #[clap(long, action = clap::ArgAction::SetTrue, overrides_with = "no-tera")]
+    #[clap(long, action = clap::ArgAction::SetTrue, overrides_with = "no_tera")]
     pub tera: bool,
     #[clap(long = "no-tera", action = clap::ArgAction::SetFalse, hide = true)]
     pub no_tera: bool,
@@ -336,19 +334,48 @@ pub fn run(opts: Opts) -> Result<()> {
     Ok(())
 }
 
-fn main() {
-    let opts = Opts::parse();
+#[allow(unused_variables)]
+fn init_logger(opts: &Opts) {
+    let rust_log = env::var("RUST_LOG").ok()
+        .map(|val| val.to_lowercase());
 
     let mut builder = Builder::from_default_env();
 
-    let log_level = match opts.verbose {
-        0 => LevelFilter::Error,
-        1 => LevelFilter::Info,
-        2 => LevelFilter::Debug,
-        _ => LevelFilter::Trace,
-    };
+    #[cfg(debug_assertions)]
+    {
+        if rust_log.is_none() {
+            builder.filter_level(LevelFilter::Debug);
+        }
+    }
+    #[cfg(not(debug_assertions))]
+    {
+        builder
+            .format_module_path(false)
+            .format_target(false)
+            .format_timestamp(None);
 
-    builder.filter(None, log_level).init();
+
+        if rust_log.is_none() {
+            {
+                let log_level = match opts.verbose {
+                    0 => LevelFilter::Info,
+                    1 => LevelFilter::Info,
+                    2 => LevelFilter::Debug,
+                    _ => LevelFilter::Trace,
+                };
+
+                builder.filter(None, log_level);
+            }
+        }
+    }
+
+    builder.init();
+}
+
+fn main() {
+    let opts = Opts::parse();
+
+    init_logger(&opts);
 
     if let Err(e) = run(opts) {
         eprintln!("Error: {e}");

@@ -1,0 +1,4 @@
+[alias]
+"@test" = ["exec", "-s", "zsh", "cargo insta test --features integration-tests; cargo insta review"]
+
+"@sysd" = "exec cargo run --release ___extras/sysd.tera -f yaml -t systemd -o $HOME/.config/systemd/user/"

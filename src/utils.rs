@@ -88,7 +88,6 @@ pub fn systemctl_cmd(is_root: bool) -> Command {
 
 #[cfg(test)]
 pub fn ask_confirm(_prompt: &str, yes_default: bool) -> io::Result<bool> {
-    dbg!("hu");
     Ok(yes_default)
 }
 

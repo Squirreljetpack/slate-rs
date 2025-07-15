@@ -59,7 +59,7 @@ startup_server:
         After: network-online.target
         Wants: network-online.target systemd-networkd-wait-online.service
     Service:
-        Type: Exec
+        Type: exec
         ExecStart: caddy start --config docker/caddy/Caddyfile
         Restart: on-failure
     Install:

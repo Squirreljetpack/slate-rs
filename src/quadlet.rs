@@ -311,7 +311,8 @@ pub fn process_quadlets(mut units: IniFiles, initial_dir: Option<&Path>) -> Resu
                 unit_section.insert("After".to_string(), "local-fs.target network-online.target systemd-networkd-wait-online.service".to_string());
             }
 
-            let container_section = unit_data.0.entry("Service".to_string()).or_insert_with(Section::new);
+            let container_section = unit_data.0.entry("Container".to_string()).or_insert_with(Section::new);
+            // if .env exists in the same directory as .compose, load the values into the container
             if let Some(dir) = initial_dir {
                 let env_file = dir.join(".env");
                 let env_file_str=env_file.to_string_lossy().to_string();
