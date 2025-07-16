@@ -1,4 +1,5 @@
-# slate sysd.tera compose.yaml -t quadlet -o outputs
+# slate compose.yaml -t quadlet -o outputs
+# writes revised compose.yaml + quadlet files into outputs/
 
 services:
   dufs:

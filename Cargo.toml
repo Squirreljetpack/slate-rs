@@ -1,40 +1,37 @@
 [package]
-name = "slate"
+name = "slate-rs"
 version = "0.1.0"
 edition = "2018"
 license = "MIT"
-description ="slate is a command line utility that translates file formats"
-keywords = [ "json", "yaml", "serde", "toml", "bincode" ]
+description ="translate file formats + goodies"
+keywords = ["serde", "convert", "quadlet", "systemd"]
 
 [lib]
-name = "slate"
+name = "slaters"
 path = "src/lib.rs"
 
 [[bin]]
 name = "slate"
 path = "src/main.rs"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
-serde = "^1"
-
 # serialization & deserialization
+serde = "^1"
 serde_json = "^1"
 serde_yaml = "^0.9"
 serde_cbor = "^0.11"
 ron = "^0.8"
 toml = "^0.8"
 bson = "^2"
+erased-serde = "^0.4"
+serde_ini = "0.2.0"
 
-# only serialization
 serde-pickle = "^1"
 bincode = "^1"
 postcard = { version = "^1", features = [ "alloc" ] }
 flexbuffers = "^2.0"
 
 clap = { version = "^4", features = ["derive"] }
-erased-serde = "^0.4"
 anyhow = "^1.0"
 indexmap = { version = "^2", features = ["serde"] }
 tera = "^1"
@@ -43,7 +40,6 @@ env_logger = "0.11.8"
 regex = "1.11.1"
 demand = "1.7.0"
 tempfile = "^3"
-serde_ini = "0.2.0"
 
 [dev-dependencies]
 serde_yaml = "^0.9"

@@ -37,6 +37,8 @@ pub struct Opts {
 pub struct FileCmd {
     // if no input is given, then switch to console mode
     pub input: Option<PathBuf>,
+    // todo: describe that this specifies a directory path for quadlet and systemd modes
+    /// output filepath
     #[clap(short, long)]
     pub output: Option<PathBuf>,
     #[clap(short, long, value_enum)]

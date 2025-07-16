@@ -100,21 +100,22 @@ pub fn ask_confirm(prompt: &str, yes_default: bool) -> io::Result<bool> {
         return Ok(yes_default);
     }
 
-    let confirm = if yes_default {
+    if yes_default {
         Confirm::new(prompt)
             .affirmative("Yes")
             .negative("No")
+            .run()
     } else {
         Confirm::new(prompt)
             .affirmative("No")
             .negative("Yes")
-    };
-
-    confirm.run()
+            .run()
+            .map(|v| !v)
+    }
 }
 
-pub fn normalize_path(path_str: &str) -> String {
-    let path = Path::new(path_str);
+pub fn normalize_path<P: AsRef<Path>>(path_input: P) -> String {
+    let path = path_input.as_ref();
     let path = if path.is_absolute() {
         path.to_path_buf()
     } else {

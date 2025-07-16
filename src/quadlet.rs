@@ -83,6 +83,7 @@ fn get_qualified_name(name: &str) -> Result<String> {
     Err(anyhow!("Could not qualify image name: {}", name))
 }
 
+// podlet convert doesn't support ${} in places such as volumes so we offer to make replacements
 fn replace_env_vars(value: &mut Value) -> Result<()> {
     match value {
         Value::String(s) => {
@@ -94,11 +95,11 @@ fn replace_env_vars(value: &mut Value) -> Result<()> {
                 let var = &cap[0];
                 let var_name = &var[2..var.len() - 1];
                 if let Ok(env_var) = std::env::var(var_name) {
-                    if ask_confirm(
+                    if cfg!(feature = "integration-tests") || ask_confirm(
                         &format!(
                             "Replace '{var}' with '{env_var}'?"
                         ),
-                        true,
+                        false,
                     )? {
                         new_s = new_s.replace(var, &env_var);
                         replacements_made = true;
@@ -159,7 +160,6 @@ pub fn process_compose(mut file: ComposeFile, initial_dir: Option<&Path>) -> Res
             }
         }
     
-
     if let Some(dir) = initial_dir {
         let env_file = dir.join(".env");
         if env_file.exists() {
@@ -170,7 +170,7 @@ pub fn process_compose(mut file: ComposeFile, initial_dir: Option<&Path>) -> Res
                 let line = line?;
                 if let Some((key, value)) = line.split_once('=') {
                     if let Ok(existing_value) = std::env::var(key) {
-                        if !ask_confirm(
+                        if ! ask_confirm(
                             &format!(
                                 "Environment variable '{key}' is already set to '{existing_value}'. Overwrite with '{value}' for variable substitution?"
                             ),
@@ -311,26 +311,29 @@ pub fn process_quadlets(mut units: IniFiles, initial_dir: Option<&Path>) -> Resu
                 unit_section.insert("After".to_string(), "local-fs.target network-online.target systemd-networkd-wait-online.service".to_string());
             }
 
-            let container_section = unit_data.0.entry("Container".to_string()).or_insert_with(Section::new);
-            // if .env exists in the same directory as .compose, load the values into the container
+            let service_section = unit_data.0.entry("Service".to_string()).or_insert_with(Section::new);
+            // if .env exists in the same directory as .compose, include it into the systemd service
             if let Some(dir) = initial_dir {
                 let env_file = dir.join(".env");
-                let env_file_str=env_file.to_string_lossy().to_string();
+                let env_file_str=normalize_path(&env_file);
                 if env_file.exists()
                     && ask_confirm(
                         &format!("Add EnvironmentFile={env_file_str} to '{unit_name}'?"),
                         true,
                     )? {
-                        container_section.insert("EnvironmentFile".to_string(), env_file_str);
+                        service_section.insert("EnvironmentFile".to_string(), env_file_str);
                     }
             }
 
+            let container_section = unit_data.0.entry("Container".to_string()).or_insert_with(Section::new);
+
+            let image_name = container_section.get("Image").map(|s| s.as_str()).unwrap_or("");
+            let autoupdate_value = if image_name.contains('.') { "registry" } else { "local" };
+
             if ask_confirm(
-                &format!("Add AutoUpdate= to '{unit_name}'?"),
+                &format!("Add AutoUpdate={autoupdate_value} to '{unit_name}'?"),
                 true,
             )? {
-                let image_name = container_section.get("Image").map(|s| s.as_str()).unwrap_or("");
-                let autoupdate_value = if image_name.contains('.') { "registry" } else { "local" };
                 container_section.insert("AutoUpdate".to_string(), autoupdate_value.to_string());
             }
         }

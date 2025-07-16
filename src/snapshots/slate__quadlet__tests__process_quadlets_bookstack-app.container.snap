@@ -8,7 +8,7 @@ After=local-fs.target network-online.target systemd-networkd-wait-online.service
 [Container]
 Image=lscr.io/linuxserver/bookstack
 Pod=bookstack.pod
-EnvironmentFile=/tmp/slater/.env
 AutoUpdate=registry
 [Service]
 Restart=always
+EnvironmentFile=/tmp/slater/.env

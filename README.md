@@ -1,12 +1,22 @@
-# slate
+# slate-rs [![Crates.io](https://img.shields.io/crates/v/slate-rs)](https://crates.io/crates/slate-rs)[![License](https://img.shields.io/github/license/squirreljetpack/slate-rs)](https://github.com/squirreljetpack/slate-rs/blob/main/LICENSE)
 
 >[!NOTE]
 > Fork of https://github.com/znx3p0/vielsprachig, with extra functionality
 
+
+# Installation
+
+```shell
+cargo install slate-rs
+
+# Convert yml -> toml
+slate $HOME/.config/alacritty.yml -o $HOME/.config/alacritty.toml
+```
+
 # Features
-- Convert between many different input and output filetypes
-- Tera templating with `-t` flag
-- Special output modes for generating systemd timers and quadlet files
+- Convert between different input and output serialized data formats
+- Tera templating
+- Special modes for generating systemd timers and quadlet files (see examples)
 
 ## Supported formats
 The current input options and their inferred extensions are:
@@ -31,5 +41,6 @@ The current input options and their inferred extensions are:
 
 # See also
 
-https://matduggan.com/replace-compose-with-quadlet/
-https://chasingsunlight.netlify.app/posts/homelab-with-docker-and-tailscale-2/
+- https://matduggan.com/replace-compose-with-quadlet/
+
+- https://chasingsunlight.netlify.app/posts/homelab-with-docker-and-tailscale-2/

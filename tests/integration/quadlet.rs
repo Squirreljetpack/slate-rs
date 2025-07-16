@@ -1,6 +1,6 @@
 use anyhow::Result;
-use slate::quadlet::{process_compose, ComposeFile};
-use slate::utils::enter_test_dir;
+use slaters::quadlet::{process_compose, ComposeFile};
+use slaters::utils::enter_test_dir;
 use std::{fs::File};
 
 use std::sync::Once;
