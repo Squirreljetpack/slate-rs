@@ -1,7 +1,6 @@
 # slate-rs [![Crates.io](https://img.shields.io/crates/v/slate-rs)](https://crates.io/crates/slate-rs)[![License](https://img.shields.io/github/license/squirreljetpack/slate-rs)](https://github.com/squirreljetpack/slate-rs/blob/main/LICENSE)
 
->[!NOTE]
-> Fork of https://github.com/znx3p0/vielsprachig, with extra functionality
+Fork of https://github.com/znx3p0/vielsprachig, with extra functionality
 
 
 # Installation

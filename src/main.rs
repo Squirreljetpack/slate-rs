@@ -234,8 +234,12 @@ pub fn run(opts: Opts) -> Result<()> {
             input_bytes = std::fs::read(&inp_path)?;
             if inp_path.extension().and_then(|e| e.to_str()) == Some("tera") {
                 tera_enabled = true;
+                let mut stripped = inp_path.clone();
+                stripped.set_extension("");
+                from_variant = from.unwrap_or_else(|| FromVariant::from(&stripped));
+            } else {
+                from_variant = from.unwrap_or_else(|| FromVariant::from(&inp_path));
             }
-            from_variant = from.unwrap_or_else(|| FromVariant::from(&inp_path));
             input_path = Some(inp_path);
         }
         None => {

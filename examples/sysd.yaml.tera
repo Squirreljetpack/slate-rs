@@ -1,6 +1,6 @@
 {# The following is an example config for creating systemd files with yaml #}
 {# The Timer section is specially handled to map all fields except description to the Timer section of corresponding timer file for the defined service #}
-{# The following command will install and enable them as user services for you: slate sysd.tera -f yaml -t systemd -o $HOME/.config/systemd/user/ #}
+{# The following command will install and enable them as user services for you: slate sysd.tera -t systemd -o $HOME/.config/systemd/user/ #}
 
 {# Create a basic timer #}
 git_obsidian:
